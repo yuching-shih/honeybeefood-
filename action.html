@@ -570,7 +570,40 @@
       </div>
 
     </section>
-    
+    <script>
+      const bookingForm = document.getElementById('bookingForm');
+
+      bookingForm.addEventListener('submit', function (event) {
+        if (event.defaultPrevented) return;
+
+        const booking = new FormData(bookingForm);
+        const name = booking.get('entry.395532943').trim().slice(0, 100);
+        const people = booking.get('entry.1665284694');
+        const activity = booking.get('entry.51259588');
+        const message = [
+          '🐝 蜂起永續｜新的食農教育預約',
+          '報名者：' + name,
+          '體驗人數：' + people + ' 人',
+          '活動項目：' + activity,
+          '聯絡電話請至預約試算表查看。',
+        ].join('\n');
+
+        const notifyUrl = new URL('https://v2.chateverywhere.app/api/line/notify');
+        notifyUrl.searchParams.set('token', 'gdx90Gj1QQAeKu0_5HYhncekPbwlHmR1');
+        notifyUrl.searchParams.set('message', message);
+
+        // 保留表單原本的送出方式，並在頁面跳轉時繼續傳送通知請求。
+        fetch(notifyUrl, {
+          method: 'GET',
+          mode: 'no-cors',
+          keepalive: true,
+          cache: 'no-store',
+          referrerPolicy: 'no-referrer',
+        }).catch(function () {
+          console.warn('LINE 通知請求未能送出。');
+        });
+      });
+    </script>
   </main>
 
 
